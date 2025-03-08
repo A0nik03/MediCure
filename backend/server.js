@@ -5,7 +5,7 @@ import MedicineRoute from './routes/route.medicine.js';
 import EmergencyRoute from './routes/route.emergencyRequest.js';
 import RareInjectionRoute from './routes/routes.rareInjection.js';
 import cors from 'cors';
-import path from 'path';
+import path, { dirname } from 'path';
 
 const app = express();
 
