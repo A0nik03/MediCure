@@ -13,7 +13,9 @@ const Home = () => {
     <div className="relative h-full w-screen bg-[#fafafa] font-[Work Sans] flex flex-col">
       <NavBar />
       <Header/>
+      <div className="hidden sm:block">
       <ChooseUs/>
+      </div>
       <Features/>
       <Insights/>
       <MedNews/>
