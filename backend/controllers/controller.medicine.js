@@ -26,6 +26,7 @@ export const AddMedicine = async (req, res) => {
 export const GetMedicines = async (req, res) => {
     try {
         const medicines = await Medicine.find({});
+        console.log(medicines);
 
         res.status(200).json({
             message: "Medicines fetched successfully",

@@ -1,110 +1,102 @@
-import React, { useEffect, useState } from "react";
-import { BiSolidHelpCircle } from "react-icons/bi";
+// NavBar.jsx
+import React, { useEffect, useState, useCallback } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { HiOutlineMenu, HiX } from "react-icons/hi";
+import Sidebar from "./Sidebar";
 
 const NavBar = () => {
-  const [active, setActive] = useState(0);
-  const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState(0);
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
 
-  const tabs = [
-    { label: "Home", path: "/" },
-    { label: "Services", path: "/services" },
-    { label: "About", path: "/about" },
-    { label: "Contact", path: "/contact" },
+  const navTabs = [
+    { label: "Home", path: "/", id: "nav-home" },
+    { label: "Services", path: "/services", id: "nav-services" },
+    { label: "About", path: "/about", id: "nav-about" },
+    { label: "Contact", path: "/contact", id: "nav-contact" },
   ];
 
-  useEffect(() => {
-    const activeTab = tabs.findIndex((tab) => tab.path === location.pathname);
-    if (activeTab !== -1) {
-      setActive(activeTab);
-    }
-  }, [location.pathname, tabs]);
+  const toggleSidebar = useCallback(() => {
+    setSidebarOpen((prev) => !prev);
+  }, []);
 
-  const toggleMobileMenu = () => {
-    setMobileMenuOpen(!isMobileMenuOpen);
-  };
+  useEffect(() => {
+    const currentTab = navTabs.findIndex((tab) => tab.path === location.pathname);
+    setActiveTab(currentTab !== -1 ? currentTab : 0);
+  }, [location.pathname]);
 
   return (
-    <div className="fixed h-[8vh] w-full top-0 flex items-center p-2 bg-base-200 text-white z-50">
-      {/* Logo */}
-      <div className="flex items-center w-1/4 sm:w-1/6">
-        <img
-          src="logo.png"
-          className="h-full max-h-32 w-auto object-cover"
-          alt="Company Logo"
-        />
-      </div>
-
-      {/* Desktop Navigation */}
-      <div className="hidden sm:flex w-4/6 justify-center items-center gap-4">
-        {tabs.map((tab, index) => (
-          <div key={tab.label} className="flex h-full flex-col items-center gap-2">
-            <Link
-              to={tab.path}
-              onClick={() => setActive(index)}
-              className={`px-4 py-1 text-lg font-semibold flex flex-col hover:scale-[1.07] items-center gap-1 ${
-                active === index
-                  ? "text-teal-500 font-bold"
-                  : "text-gray-400"
-              } cursor-pointer transition-all duration-300`}
-            >
-              {tab.label}
-              {active === index && (
-                <span className="h-2 w-2 rounded-full bg-teal-500"></span>
-              )}
+    <>
+      <nav
+        className="fixed top-0 left-0 w-full h-[8vh] text-gray-800 z-10"
+        aria-label="Main navigation"
+      >
+        <div className="flex items-center justify-between h-full px-4 max-w-7xl mx-auto">
+          {/* Logo */}
+          <div className="flex-shrink-0">
+            <Link to="/" aria-label="Home">
+              <img
+                src="logo.png"
+                className="h-28 sm:h-40 w-auto object-contain"
+                alt="Company Logo"
+                loading="lazy"
+              />
             </Link>
           </div>
-        ))}
-      </div>
 
-      {/* Mobile Navigation Toggle */}
-      <div className="sm:hidden flex justify-end items-center w-3/4">
-        {isMobileMenuOpen ? (
-          <HiX
-            className="text-teal-500 cursor-pointer text-3xl"
-            onClick={toggleMobileMenu}
-          />
-        ) : (
-          <HiOutlineMenu
-            className="text-teal-500 cursor-pointer text-3xl"
-            onClick={toggleMobileMenu}
-          />
-        )}
-      </div>
+          {/* Desktop Navigation */}
+          <div className="hidden sm:flex items-center justify-center gap-6">
+            {navTabs.map((tab, index) => (
+              <Link
+                key={tab.id}
+                to={tab.path}
+                onClick={() => setActiveTab(index)}
+                className={`relative px-3 py-2 text-lg font-medium transition-all duration-300 hover:text-teal-300 ${
+                  activeTab === index ? "text-teal-500" : "text-gray-600"
+                }`}
+                aria-current={activeTab === index ? "page" : undefined}
+              >
+                {tab.label}
+                {activeTab === index && (
+                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full bg-teal-500" />
+                )}
+              </Link>
+            ))}
+          </div>
 
-      {/* Mobile Navigation Menu */}
-      {isMobileMenuOpen && (
-        <div className="absolute top-[8vh] left-0 w-full bg-base-200 flex flex-col items-center gap-2 py-4 shadow-md sm:hidden">
-          {tabs.map((tab, index) => (
-            <Link
-              key={tab.label}
-              to={tab.path}
-              onClick={() => {
-                setActive(index);
-                setMobileMenuOpen(false);
-              }}
-              className={`text-lg font-semibold ${
-                active === index
-                  ? "text-teal-500 font-bold"
-                  : "text-gray-400"
-              } cursor-pointer transition-all duration-300`}
-            >
-              {tab.label}
-            </Link>
-          ))}
+          {/* Mobile Menu Toggle */}
+          <button
+            className="sm:hidden p-2"
+            onClick={toggleSidebar}
+            aria-label="Toggle navigation menu"
+            aria-expanded={isSidebarOpen}
+          >
+            {isSidebarOpen ? (
+              <HiX className="text-teal-500 text-2xl" />
+            ) : (
+              <HiOutlineMenu className="text-teal-500 text-2xl" />
+            )}
+          </button>
         </div>
-      )}
+      </nav>
 
-      {/* Extras */}
-      <div className="hidden sm:flex w-1/6 justify-end items-center">
-        <BiSolidHelpCircle
-          className="text-teal-500 cursor-pointer hover:scale-[1.1] transition-transform duration-300 text-3xl"
-          aria-label="Help Icon"
+      {/* Sidebar */}
+      <Sidebar
+        isOpen={isSidebarOpen}
+        onClose={toggleSidebar}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        navTabs={navTabs}
+      />
+
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-30 sm:hidden"
+          onClick={toggleSidebar}
+          aria-hidden="true"
         />
-      </div>
-    </div>
+      )}
+    </>
   );
 };
 
