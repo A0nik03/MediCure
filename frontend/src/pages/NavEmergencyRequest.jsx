@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NavBar from "../components/NavBar";
 import Footer from "../components/Footer";
-import axios from "axios";
+import axios from "../utils/axios";
 import { toast } from "react-toastify";
 
 const NewEmergencyRequest = () => {
@@ -23,7 +23,7 @@ const NewEmergencyRequest = () => {
   const handleSubmit = async(e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:4000/api/emergency/add-emergency-request", formData);
+      const response = await axios.post("emergency/add-emergency-request", formData);
       if(response.status === 201){
         console.log(response.data);
         setFormData({})

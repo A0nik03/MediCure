@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NavBar from "../components/NavBar";
 import Footer from "../components/Footer";
-import axios from "axios";
+import axios from "../utils/axios";
 import { toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -24,7 +24,7 @@ const RequestRareInjection = () => {
   const handleSubmit = async(e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:4000/api/rareInjection/add-rare-injection",formData);
+      const response = await axios.post("rareInjection/add-rare-injection",formData);
 
       if (response.status === 201) {
         toast.success("Request Submitted Successfully!");

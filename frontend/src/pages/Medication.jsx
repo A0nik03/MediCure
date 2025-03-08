@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 import NavBar from "../components/NavBar";
 import Footer from "../components/Footer";
 import Pagination from "@mui/material/Pagination";
-import axios from "axios";
+import axios from "../utils/axios";
 
 const Medication = () => {
   const [medicines,SetMedicines] = useState([]);
 
   const GetMedicines = async () => {
     try {
-      const response = await axios("http://localhost:4000/api/medicine/get-medicines");
+      const response = await axios.get("medicine/get-medicines");
       if(response.status === 200){
         console.log(response.data);
         SetMedicines(response.data.medicines);
